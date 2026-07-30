@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise de Arrendamento</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1e3a8a">
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #16a34a;
+            --bg-color: #f8fafc;
+            --text-color: #334155;
+            --border-color: #cbd5e1;
+        }
+        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 15px; }
+        .container { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        h1 { color: var(--primary-color); font-size: 1.5rem; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-top: 0; }
+        .section-title { font-size: 1.1rem; color: var(--secondary-color); margin: 25px 0 15px; font-weight: 600; }
+        .form-group { margin-bottom: 16px; }
+        label { display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 6px; color: #475569; }
+        input[type="number"] { width: 100%; padding: 12px; font-size: 1rem; border: 1px solid var(--border-color); border-radius: 8px; }
+        input[type="number"]:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1); }
+        .results-card { background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 20px; margin-top: 30px; }
+        .result-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #dcfce7; }
+        .result-row:last-child { border-bottom: none; }
+        .result-label { font-weight: 500; color: #166534; }
+        .result-value { font-weight: 700; font-size: 1.125rem; color: #14532d; }
+        .result-value.highlight { font-size: 1.25rem; color: var(--primary-color); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Análise de Arrendamento</h1>
+    
+    <div class="section-title">Dados de Produção</div>
+    <div class="form-group"><label>Alqueires em Cana</label><input type="number" id="alqCana" step="any" value="105" oninput="calcular()"></div>
+    <div class="form-group"><label>KG / ATR</label><input type="number" id="kgAtr" step="any" value="121.97" oninput="calcular()"></div>
+    <div class="form-group"><label>Ton / Alqueire / Ano</label><input type="number" id="tonAlqAno" step="any" value="65" oninput="calcular()"></div>
+    <div class="form-group"><label>Preço ATR (R$)</label><input type="number" id="precoAtr" step="any" value="0.8877" oninput="calcular()"></div>
+
+    <div class="section-title">Dados da Propriedade</div>
+    <div class="form-group"><label>Área Total (Alqueires)</label><input type="number" id="areaTotal" step="any" value="158" oninput="calcular()"></div>
+    <div class="form-group"><label>Valor por Alqueire (R$)</label><input type="number" id="valorAlq" step="any" value="220000" oninput="calcular()"></div>
+
+    <div class="results-card">
+        <div class="result-row"><span class="result-label">Valor da Fazenda</span><span class="result-value" id="resValorFazenda">R$ 0,00</span></div>
+        <div class="result-row"><span class="result-label">Renda Anual</span><span class="result-value highlight" id="resRendaAnual">R$ 0,00</span></div>
+        <div class="result-row"><span class="result-label">Renda Mensal</span><span class="result-value" id="resRendaMensal">R$ 0,00</span></div>
+        <div class="result-row"><span class="result-label">ROI (Anual)</span><span class="result-value" id="resRoi">0,00%</span></div>
+    </div>
+</div>
+
+<script>
+    const formataMoeda = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+    const formataPct = new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 4 });
+
+    function obterValor(id) { const val = parseFloat(document.getElementById(id).value); return isNaN(val) ? 0 : val; }
+
+    function calcular() {
+        const alqCana = obterValor('alqCana'), kgAtr = obterValor('kgAtr');
+        const tonAlqAno = obterValor('tonAlqAno'), precoAtr = obterValor('precoAtr');
+        const areaTotal = obterValor('areaTotal'), valorAlq = obterValor('valorAlq');
+
+        const rendaAnual = alqCana * kgAtr * tonAlqAno * precoAtr;
+        const rendaMensal = rendaAnual / 12;
+        const valorFazenda = areaTotal * valorAlq;
+        const roi = valorFazenda > 0 ? rendaAnual / valorFazenda : 0;
+
+        document.getElementById('resValorFazenda').innerText = formataMoeda.format(valorFazenda);
+        document.getElementById('resRendaAnual').innerText = formataMoeda.format(rendaAnual);
+        document.getElementById('resRendaMensal').innerText = formataMoeda.format(rendaMensal);
+        document.getElementById('resRoi').innerText = formataPct.format(roi);
+    }
+    window.onload = calcular;
+
+    // Registro do Service Worker para funcionamento offline
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('Service Worker registrado com sucesso!', reg))
+                .catch(err => console.error('Falha ao registrar o Service Worker:', err));
+        });
+    }
+</script>
+</body>
+</html>
