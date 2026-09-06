@@ -1,8 +1,9 @@
-const CACHE_NAME = 'arrendamento-v1';
+const CACHE_NAME = 'arrendamento-v3'; 
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json'
+  './',
+  'index.html',
+  'manifest.json',
+  'image.png'
 ];
 
 self.addEventListener('install', event => {
