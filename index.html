@@ -16,18 +16,50 @@
         }
         * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 15px; }
-        .container { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         
-        /* Estilo da sua Logo */
-        .logo { max-width: 140px; height: auto; margin: 0 auto 20px; display: block; border-radius: 8px; }
+        .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background: #ffffff; 
+            border-radius: 12px; 
+            padding: 24px; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden; /* Mantém a logo dentro dos limites arredondados */
+        }
+
+        /* Efeito de Baixo Relevo / Marca d'água no centro */
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85%;
+            height: 85%;
+            background-image: url('image.png');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.06; /* Transparência ideal para não atrapalhar o texto */
+            filter: grayscale(100%) contrast(150%); /* Tira a cor e aumenta o contraste para dar o tom de relevo */
+            pointer-events: none; /* Garante que você consiga clicar nos campos por cima da imagem */
+            z-index: 0;
+        }
+
+        /* Garante que o texto e os campos fiquem acima da marca d'água */
+        .container > * {
+            position: relative;
+            z-index: 1;
+        }
         
         h1 { color: var(--primary-color); font-size: 1.5rem; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-top: 0; }
         .section-title { font-size: 1.1rem; color: var(--secondary-color); margin: 25px 0 15px; font-weight: 600; }
         .form-group { margin-bottom: 16px; }
         label { display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 6px; color: #475569; }
-        input[type="number"] { width: 100%; padding: 12px; font-size: 1rem; border: 1px solid var(--border-color); border-radius: 8px; }
-        input[type="number"]:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1); }
-        .results-card { background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 20px; margin-top: 30px; }
+        input[type="number"] { width: 100%; padding: 12px; font-size: 1rem; border: 1px solid var(--border-color); border-radius: 8px; background-color: rgba(255, 255, 255, 0.8); }
+        input[type="number"]:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1); background-color: #fff; }
+        .results-card { background-color: rgba(240, 253, 244, 0.9); border: 1px solid #bbf7d0; border-radius: 10px; padding: 20px; margin-top: 30px; }
         .result-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #dcfce7; }
         .result-row:last-child { border-bottom: none; }
         .result-label { font-weight: 500; color: #166534; }
@@ -38,7 +70,6 @@
 <body>
 
 <div class="container">
-    <img src="image.png" alt="Logo" class="logo">
     <h1>Análise de Arrendamento</h1>
     
     <div class="section-title">Dados de Produção</div>
@@ -67,7 +98,7 @@
 
     function obterValor(id) { 
         const campo = document.getElementById(id).value;
-        if (campo === "") return 0; // Se estiver vazio, calcula como zero
+        if (campo === "") return 0;
         const val = parseFloat(campo); 
         return isNaN(val) ? 0 : val; 
     }
@@ -93,11 +124,6 @@
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('sw.js')
                 .catch(err => console.error('Falha ao registrar:', err));
-        });
-    }
-</script>
-</body>
-</html>
         });
     }
 </script>
