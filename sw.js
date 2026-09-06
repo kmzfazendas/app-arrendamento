@@ -1,4 +1,4 @@
-const CACHE_NAME = 'arrendamento-v3'; 
+const CACHE_NAME = 'arrendamento-v4'; 
 const urlsToCache = [
   './',
   'index.html',
