@@ -28,7 +28,7 @@
             overflow: hidden;
         }
 
-        /* Marca d'água central colorida com 50% de transparência */
+        /* Marca d'água central colorida com 30% de transparência */
         .container::before {
             content: "";
             position: absolute;
@@ -41,7 +41,7 @@
             background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
-            opacity: 0.5; /* Alterado para 50% */
+            opacity: 0.3; /* Alterado para 30% */
             pointer-events: none; 
             z-index: 0;
         }
@@ -124,6 +124,9 @@
                 .catch(err => console.error('Falha ao registrar:', err));
         });
     }
+</script>
+</body>
+</html>
 </script>
 </body>
 </html>
