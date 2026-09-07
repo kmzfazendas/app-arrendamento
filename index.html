@@ -41,7 +41,7 @@
             background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
-            opacity: 0.3; /* Alterado para 30% */
+            opacity: 0.3;
             pointer-events: none; 
             z-index: 0;
         }
@@ -63,6 +63,9 @@
         .result-label { font-weight: 500; color: #166534; }
         .result-value { font-weight: 700; font-size: 1.125rem; color: #14532d; }
         .result-value.highlight { font-size: 1.25rem; color: var(--primary-color); }
+        
+        /* Estilo da assinatura */
+        .footer-credits { text-align: right; font-size: 0.75rem; color: #64748b; margin-top: 15px; font-style: italic; }
     </style>
 </head>
 <body>
@@ -88,6 +91,9 @@
         <div class="result-row"><span class="result-label">Renda Mensal</span><span class="result-value" id="resRendaMensal">R$ 0,00</span></div>
         <div class="result-row"><span class="result-label">ROI (Anual)</span><span class="result-value" id="resRoi">0,00%</span></div>
     </div>
+    
+    <!-- Assinatura adicionada aqui -->
+    <div class="footer-credits">desenvolvido por @kmzfazendas</div>
 </div>
 
 <script>
